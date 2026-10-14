@@ -3,6 +3,9 @@ import {AppSession} from '~/lib/session';
 import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {getLocaleFromRequest} from '~/lib/i18n';
+import { WeaverseClient } from "@weaverse/hydrogen";
+import { components } from "~/weaverse/components";
+import { themeSchema } from "~/weaverse/schema.server";
 
 // Define the additional context object
 const additionalContext = {
@@ -17,7 +20,7 @@ const additionalContext = {
 type AdditionalContextType = typeof additionalContext;
 
 declare global {
-  interface HydrogenAdditionalContext extends AdditionalContextType {}
+  interface HydrogenAdditionalContext extends AdditionalContextType { weaverse: WeaverseClient }
 
   // Augment HydrogenCustomCartFragment with the codegen'd cart fragment type so
   // that context.cart.get() and all cart mutations return the extended cart type.
@@ -28,17 +31,11 @@ declare global {
  * Creates Hydrogen context for React Router 7.9.x
  * Returns HydrogenRouterContextProvider with hybrid access patterns
  * */
-export async function createHydrogenRouterContext(
-  request: Request,
-  env: Env,
-  executionContext: ExecutionContext,
-) {
+export async function createHydrogenRouterContext(request: Request, env: Env, executionContext: ExecutionContext) {
   /**
    * Open a cache instance in the worker and a custom session instance.
    */
-  if (!env?.SESSION_SECRET) {
-    throw new Error('SESSION_SECRET environment variable is not set');
-  }
+  if (!env?.SESSION_SECRET) throw new Error('SESSION_SECRET environment variable is not set');
 
   const waitUntil = executionContext.waitUntil.bind(executionContext);
   const [cache, session] = await Promise.all([
@@ -61,6 +58,15 @@ export async function createHydrogenRouterContext(
     },
     additionalContext,
   );
-
+  
+  const weaverse = new WeaverseClient({
+    ...hydrogenContext,
+    request,
+    cache,
+    themeSchema,
+    components
+  });
+  
+  Object.assign(hydrogenContext, { weaverse });
   return hydrogenContext;
 }

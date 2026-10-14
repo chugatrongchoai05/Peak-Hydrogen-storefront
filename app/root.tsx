@@ -1,15 +1,5 @@
 import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
-import {
-  Outlet,
-  useRouteError,
-  isRouteErrorResponse,
-  type ShouldRevalidateFunction,
-  Links,
-  Meta,
-  Scripts,
-  ScrollRestoration,
-  useRouteLoaderData,
-} from 'react-router';
+import { Outlet, useRouteError, isRouteErrorResponse, type ShouldRevalidateFunction, Links, Meta, Scripts, ScrollRestoration, useRouteLoaderData } from 'react-router';
 import type {Route} from './+types/root';
 import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
@@ -17,6 +7,8 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
+import { withWeaverse } from "@weaverse/hydrogen";
+import { GlobalStyle } from "./weaverse/styles";
 
 export type RootLoader = typeof loader;
 
@@ -142,7 +134,7 @@ function loadDeferredData({context}: Route.LoaderArgs) {
   };
 }
 
-export function Layout({children}: {children?: React.ReactNode}) {
+export const Layout = withWeaverse(function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
 
   return (
@@ -155,6 +147,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={appStyles}></link>
         <Meta />
         <Links />
+        <GlobalStyle />
       </head>
       <body>
         {children}
@@ -163,7 +156,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
       </body>
     </html>
   );
-}
+});
 
 export default function App() {
   const data = useRouteLoaderData<RootLoader>('root');
