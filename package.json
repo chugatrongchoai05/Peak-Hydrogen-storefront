@@ -10,7 +10,11 @@
     "preview": "shopify hydrogen preview --build",
     "lint": "eslint --no-error-on-unmatched-pattern .",
     "typecheck": "react-router typegen && tsc --noEmit",
-    "codegen": "shopify hydrogen codegen && react-router typegen"
+    "codegen": "shopify hydrogen codegen && react-router typegen",
+    "build:cf": "cross-env DEPLOY_TARGET=cloudflare react-router build",
+    "cf-dev": "wrangler dev --port 8787",
+    "check": "tsc --noEmit && npm run build:cf && wrangler deploy --dry-run",
+    "deploy": "npm run build:cf && wrangler deploy"
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
@@ -26,6 +30,7 @@
     "tailwindcss": "^4.1.6"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.64.0",
     "@eslint/compat": "^1.2.5",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
@@ -44,6 +49,7 @@
     "@types/react-dom": "^18.3.7",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-import-resolver-typescript": "^3.7.0",
@@ -57,7 +63,8 @@
     "graphql-config": "^5.0.3",
     "prettier": "^3.4.2",
     "typescript": "^5.9.2",
-    "vite": "^8.0.1"
+    "vite": "^8.0.1",
+    "wrangler": "^4.151.0"
   },
   "engines": {
     "node": "^22 || ^24"

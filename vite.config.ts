@@ -4,9 +4,17 @@ import {hydrogen} from '@shopify/hydrogen/vite';
 import {oxygen} from '@shopify/mini-oxygen/vite';
 import {reactRouter} from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
+import { cloudflare } from "@cloudflare/vite-plugin";
+
+const isCloudflare = process.env.DEPLOY_TARGET === "cloudflare";
 
 export default defineConfig({
-  plugins: [tailwindcss(), hydrogen(), oxygen(), reactRouter()],
+  plugins: [
+    tailwindcss(),
+    hydrogen(),
+    isCloudflare ? cloudflare({ viteEnvironment: { name: "ssr" } }) : oxygen(),
+    reactRouter(),
+  ],
   resolve: {
     alias: {
       // Vite's native tsconfig path resolver does not cover JavaScript
