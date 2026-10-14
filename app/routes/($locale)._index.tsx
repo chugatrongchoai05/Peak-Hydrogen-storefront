@@ -3,6 +3,7 @@ import { validateWeaverseData, WeaverseContent } from "~/weaverse";
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const weaverseData = await context.weaverse.loadPage({ type: "INDEX" });
+  if (!weaverseData) throw new Response("Page data not found", { status: 404 });
   validateWeaverseData(weaverseData);
   return { weaverseData };
 }
