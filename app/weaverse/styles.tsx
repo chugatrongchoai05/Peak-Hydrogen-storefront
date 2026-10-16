@@ -13,7 +13,11 @@ export function GlobalStyle() {
       key="global-theme-style"
       suppressHydrationWarning
       dangerouslySetInnerHTML={{
-        __html: `:root { --color-primary: ${settings.colorPrimary} }`,
+        __html: `:root {
+          --color-primary: ${settings.colorPrimary};
+          --color-background: ${settings.colorBackground};
+          --color-foreground: ${settings.colorForeground};
+        }`,
       }}
     />
   );

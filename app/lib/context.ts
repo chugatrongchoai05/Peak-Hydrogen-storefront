@@ -3,9 +3,9 @@ import {AppSession} from '~/lib/session';
 import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {getLocaleFromRequest} from '~/lib/i18n';
-import { WeaverseClient } from "@weaverse/hydrogen";
-import { components } from "~/weaverse/components";
-import { themeSchema } from "~/weaverse/schema.server";
+import { WeaverseClient } from '@weaverse/hydrogen';
+import { components } from '~/weaverse/components';
+import { themeSchema } from '~/weaverse/schema.server';
 
 // Define the additional context object
 const additionalContext = {

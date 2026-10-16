@@ -1,6 +1,13 @@
 /**
- * Configure Tailwind v4 in this file using CSS variables and directives:
- * https://tailwindcss.com/docs/v4-beta#css-first-configuration
+ * Configure Tailwind v4 in this file using CSS variables and directives: https://tailwindcss.com/docs/v4-beta#css-first-configuration
  */
 
 @import 'tailwindcss';
+
+@theme {
+  --color-primary: #111111;
+  --color-background: #ffffff;
+  --color-foreground: #111111;
+  --color-muted: #6b7280;
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+}
