@@ -1,7 +1,8 @@
 // định nghĩa metadata của theme (name, author, version), 
 // global settings schema (dùng để điền vào Theme Customizer trong Weaverse Studio)
 // và cấu hình i18n
-import type { HydrogenThemeSchema } from "@weaverse/hydrogen";
+import type { HydrogenThemeSchema } from '@weaverse/hydrogen';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '~/utils/locale';
 
 export const themeSchema: HydrogenThemeSchema = {
   info: {
@@ -35,4 +36,10 @@ export const themeSchema: HydrogenThemeSchema = {
       ],
     },
   ],
+  i18n: {
+    urlStructure: 'url-path',
+    defaultLocale: DEFAULT_LOCALE,
+    shopLocales: SUPPORTED_LOCALES,
+    translation: true,
+  },
 };

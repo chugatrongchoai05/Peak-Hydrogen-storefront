@@ -1,25 +1,20 @@
-import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
+import { Analytics, getShopAnalytics, useNonce } from '@shopify/hydrogen';
 import { Outlet, useRouteError, isRouteErrorResponse, type ShouldRevalidateFunction, Links, Meta, Scripts, ScrollRestoration, useRouteLoaderData } from 'react-router';
-import type {Route} from './+types/root';
+import type { Route } from './+types/root';
 import favicon from '~/assets/favicon.svg';
-import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import { FOOTER_QUERY, HEADER_QUERY } from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
-import {PageLayout} from './components/PageLayout';
-import { withWeaverse } from "@weaverse/hydrogen";
-import { GlobalStyle } from "./weaverse/styles";
+import { PageLayout } from './components/PageLayout';
+import { withWeaverse } from '@weaverse/hydrogen';
+import { GlobalStyle } from './weaverse/styles';
+import { resolveMarket, DEFAULT_LOCALE } from '~/utils/locale';
 
 export type RootLoader = typeof loader;
 
-/**
- * This is important to avoid re-fetching root queries on sub-navigations
- */
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-  formMethod,
-  currentUrl,
-  nextUrl,
-}) => {
+// This is important to avoid re-fetching root queries on sub-navigations
+export const shouldRevalidate: ShouldRevalidateFunction = ({formMethod, currentUrl, nextUrl}) => {
   // revalidate when a mutation is performed e.g add to cart, login...
   if (formMethod && formMethod !== 'GET') return true;
 
@@ -34,39 +29,23 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   return false;
 };
 
-/**
- * The main and reset stylesheets are added in the Layout component
- * to prevent a bug in development HMR updates.
- *
- * This avoids the "failed to execute 'insertBefore' on 'Node'" error
- * that occurs after editing and navigating to another page.
- *
- * It's a temporary fix until the issue is resolved.
- * https://github.com/remix-run/remix/issues/9242
- */
+// The main and reset stylesheets are added in the Layout component to prevent a bug in development HMR updates.
+// This avoids the "failed to execute 'insertBefore' on 'Node'" error that occurs after editing and navigating to another page.
+// It's a temporary fix until the issue is resolved. https://github.com/remix-run/remix/issues/9242
 export function links() {
   return [
-    {
-      rel: 'preconnect',
-      href: 'https://cdn.shopify.com',
-    },
-    {
-      rel: 'preconnect',
-      href: 'https://shop.app',
-    },
-    {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    { rel: 'preconnect', href: 'https://cdn.shopify.com' },
+    { rel: 'preconnect', href: 'https://shop.app' },
+    { rel: 'icon', type: 'image/svg+xml', href: favicon },
   ];
 }
 
 export async function loader(args: Route.LoaderArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
-
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
-
-  const {storefront, env} = args.context;
-
+  const { storefront, env } = args.context;
   return {
     ...deferredData,
     ...criticalData,
@@ -83,14 +62,13 @@ export async function loader(args: Route.LoaderArgs) {
       country: args.context.storefront.i18n.country,
       language: args.context.storefront.i18n.language,
     },
+    selectedLocale: resolveMarket(args.request),
   };
 }
 
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
-async function loadCriticalData({context}: Route.LoaderArgs) {
+// Load data necessary for rendering content above the fold. This is the critical data
+// needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
+async function loadCriticalData({ context }: Route.LoaderArgs) {
   const { storefront, weaverse } = context;
   const [header, weaverseTheme] = await Promise.all([
     storefront.query(HEADER_QUERY, {
@@ -105,13 +83,11 @@ async function loadCriticalData({context}: Route.LoaderArgs) {
   return { header, weaverseTheme };
 }
 
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  const {storefront, customerAccount, cart} = context;
+// Load data for rendering content below the fold. This data is deferred and will be
+// fetched after the initial page load. If it's unavailable, the page should still 200.
+// Make sure to not throw any errors here, as it will cause the page to 500.
+function loadDeferredData({ context }: Route.LoaderArgs) {
+  const { storefront, customerAccount, cart } = context;
 
   // defer the footer query (below the fold)
   const footer = storefront
@@ -133,11 +109,13 @@ function loadDeferredData({context}: Route.LoaderArgs) {
   };
 }
 
-export const Layout = withWeaverse(function Layout({children}: {children?: React.ReactNode}) {
+export const Layout = withWeaverse(function Layout({ children }: { children?: React.ReactNode }) {
   const nonce = useNonce();
+  const data = useRouteLoaderData<RootLoader>('root');
+  const market = data?.selectedLocale ?? DEFAULT_LOCALE;
 
   return (
-    <html lang="en">
+    <html lang={market.hreflang} dir={market.direction}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
