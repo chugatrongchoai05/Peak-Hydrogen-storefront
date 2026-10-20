@@ -2,8 +2,12 @@
 import type { HydrogenComponent } from '@weaverse/hydrogen';
 import * as Hero from '~/sections/hero';
 import * as CollectionList from '~/sections/collection-list';
+import * as CollectionBanner from '~/sections/collection-banner';
+import * as ProductGridSection from '~/sections/product-grid';
 
 export const components: HydrogenComponent[] = [
     Hero,
     CollectionList,
+    CollectionBanner,
+    ProductGridSection,
 ];
