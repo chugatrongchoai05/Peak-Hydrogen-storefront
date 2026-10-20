@@ -1,6 +1,6 @@
 import { Form, useLocation } from 'react-router';
 import { Link } from '~/components/ui/link';
-import { SORT_OPTIONS, type ProductListParams } from '~/utils/product-list';
+import { SORT_OPTIONS, type ProductListParams, getDefaultSort, getSortOptions } from '~/utils/product-list';
 
 const field = 'rounded border border-muted/40 px-3 py-2';
 
@@ -12,7 +12,12 @@ export function ProductListControls({ params, showSort, showFilters }: {
     const { pathname } = useLocation();
     const submitOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
         e.currentTarget.form?.requestSubmit();
-    const isDirty = params.sort !== 'featured' || params.available || params.priceMin !== undefined || params.priceMax !== undefined;
+    const sortOptions = getSortOptions(params.kind);
+    const isDirty =
+        params.sort !== getDefaultSort(params.kind) ||
+        params.available ||
+        params.priceMin !== undefined ||
+        params.priceMax !== undefined;
 
     return (
         <Form
@@ -24,7 +29,7 @@ export function ProductListControls({ params, showSort, showFilters }: {
                 <label className='flex flex-col gap-1'>
                     Sort by
                     <select name='sort' defaultValue={params.sort} onChange={submitOnChange} className={field}>
-                        {SORT_OPTIONS.map((o) => (<option key={o.value} value={o.value}>{o.label}</option>))}
+                        {sortOptions.map((option) => (<option key={option.value} value={option.value}>{option.label}</option>))}
                     </select>
                 </label>
             )}
