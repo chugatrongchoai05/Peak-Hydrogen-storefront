@@ -5,6 +5,8 @@ import * as CollectionList from '~/sections/collection-list';
 import * as CollectionBanner from '~/sections/collection-banner';
 import * as ProductGridSection from '~/sections/product-grid';
 import * as PageBanner from '~/sections/page-banner';
+import * as ProductMain from '~/sections/product-main';
+import * as RelatedProducts from '~/sections/related-products';
 
 export const components: HydrogenComponent[] = [
     Hero,
@@ -12,4 +14,6 @@ export const components: HydrogenComponent[] = [
     CollectionBanner,
     ProductGridSection,
     PageBanner,
+    ProductMain,
+    RelatedProducts
 ];
