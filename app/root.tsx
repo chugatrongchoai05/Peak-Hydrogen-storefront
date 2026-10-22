@@ -1,4 +1,4 @@
-import { Analytics, getShopAnalytics, useNonce } from '@shopify/hydrogen';
+import { Analytics, getShopAnalytics, useNonce, type HydrogenRouterContextProvider } from '@shopify/hydrogen';
 import { Outlet, useRouteError, isRouteErrorResponse, type ShouldRevalidateFunction, Links, Meta, Scripts, ScrollRestoration, useRouteLoaderData } from 'react-router';
 import type { Route } from './+types/root';
 import favicon from '~/assets/favicon.svg';
@@ -10,6 +10,7 @@ import { PageLayout } from './components/PageLayout';
 import { withWeaverse } from '@weaverse/hydrogen';
 import { GlobalStyle } from './weaverse/styles';
 import { resolveMarket, DEFAULT_LOCALE } from '~/utils/locale';
+import type { CountryCode } from '@shopify/hydrogen/storefront-api-types';
 
 export type RootLoader = typeof loader;
 
@@ -38,6 +39,15 @@ export function links() {
     { rel: 'preconnect', href: 'https://shop.app' },
     { rel: 'icon', type: 'image/svg+xml', href: favicon },
   ];
+}
+
+async function syncCartMarket(cart: HydrogenRouterContextProvider['cart'], country: CountryCode) {
+  const current = await cart.get();
+  if (current?.id && current.buyerIdentity?.countryCode !== country) {
+    const { cart: updated } = await cart.updateBuyerIdentity({ countryCode: country });
+    return updated ?? current;
+  }
+  return current;
 }
 
 export async function loader(args: Route.LoaderArgs) {
@@ -103,7 +113,7 @@ function loadDeferredData({ context }: Route.LoaderArgs) {
       return null;
     });
   return {
-    cart: cart.get(),
+    cart: syncCartMarket(cart, storefront.i18n.country),
     isLoggedIn: customerAccount.isLoggedIn(),
     footer,
   };
@@ -117,11 +127,11 @@ export const Layout = withWeaverse(function Layout({ children }: { children?: Re
   return (
     <html lang={market.hreflang} dir={market.direction}>
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="stylesheet" href={tailwindCss}></link>
-        <link rel="stylesheet" href={resetStyles}></link>
-        <link rel="stylesheet" href={appStyles}></link>
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='width=device-width,initial-scale=1' />
+        <link rel='stylesheet' href={tailwindCss}></link>
+        <link rel='stylesheet' href={resetStyles}></link>
+        <link rel='stylesheet' href={appStyles}></link>
         <Meta />
         <Links />
         <GlobalStyle />
@@ -168,7 +178,7 @@ export function ErrorBoundary() {
   }
 
   return (
-    <div className="route-error">
+    <div className='route-error'>
       <h1>Oops</h1>
       <h2>{errorStatus}</h2>
       {errorMessage && (

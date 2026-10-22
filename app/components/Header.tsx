@@ -5,7 +5,8 @@ import type { HeaderQuery, CartApiQueryFragment } from 'storefrontapi.generated'
 import { useAside } from '~/components/Aside';
 import { useThemeSettings } from '@weaverse/hydrogen';
 import type { ThemeSettings } from '~/types/weaverse';
-import {Link} from '~/components/ui/link';
+import { Link } from '~/components/ui/link';
+import { useCartRoute } from '~/utils/use-cart-route';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -28,9 +29,8 @@ export function Header({ header, isLoggedIn, cart, publicStoreDomain }: HeaderPr
         </div>
       ) : null}
       <header
-        className={`border-b border-muted/30 bg-background ${
-          settings?.stickyHeader ? 'sticky top-0 z-40' : ''
-        }`}
+        className={`border-b border-muted/30 bg-background ${settings?.stickyHeader ? 'sticky top-0 z-40' : ''
+          }`}
       >
         <div className='mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-8'>
           <Link
@@ -86,8 +86,8 @@ export function HeaderMenu({ menu, primaryDomainUrl, viewport, publicStoreDomain
         // if the URL is internal, strip its domain before passing it to the router
         const url =
           item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
+            item.url.includes(publicStoreDomain) ||
+            item.url.includes(primaryDomainUrl)
             ? new URL(item.url).pathname
             : item.url;
         return (
@@ -163,11 +163,10 @@ function SearchToggle() {
 function CartBadge({ count }: { count: number }) {
   const { open } = useAside();
   const { publish, shop, cart, prevCart } = useAnalytics();
-
+  const cartHref = useCartRoute();
   return (
-    <Link
+    <a href={cartHref}
       className='inline-flex items-center gap-1 text-sm text-foreground hover:opacity-70'
-      to='/cart'
       onClick={(event) => {
         event.preventDefault();
         open('cart');
@@ -180,7 +179,7 @@ function CartBadge({ count }: { count: number }) {
       }}
     >
       Cart <span aria-label={`(items: ${count})`}>{count}</span>
-    </Link>
+    </a>
   );
 }
 

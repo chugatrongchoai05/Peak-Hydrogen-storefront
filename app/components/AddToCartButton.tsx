@@ -1,7 +1,6 @@
-import { type FetcherWithComponents, useRouteLoaderData } from 'react-router';
+import { type FetcherWithComponents } from 'react-router';
 import { CartForm, type OptimisticCartLineInput } from '@shopify/hydrogen';
-import type { RootLoader } from '~/root';
-import { DEFAULT_LOCALE, localizePath } from '~/utils/locale';
+import { useCartRoute } from '~/utils/use-cart-route';
 
 export function AddToCartButton({ analytics, children, className = '', disabled, lines, onClick}: {
   analytics?: unknown;
@@ -11,15 +10,9 @@ export function AddToCartButton({ analytics, children, className = '', disabled,
   lines: Array<OptimisticCartLineInput>;
   onClick?: () => void;
 }) {
-  const root = useRouteLoaderData<RootLoader>('root');
-  const market = root?.selectedLocale ?? DEFAULT_LOCALE;
-
+  const cartRoute = useCartRoute();
   return (
-    <CartForm
-      route={localizePath('/cart', market)}
-      inputs={{ lines }}
-      action={CartForm.ACTIONS.LinesAdd}
-    >
+    <CartForm route={cartRoute} inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
       {(fetcher: FetcherWithComponents<any>) => (
         <>
           <input name='analytics' type='hidden' value={JSON.stringify(analytics)} />
@@ -27,9 +20,11 @@ export function AddToCartButton({ analytics, children, className = '', disabled,
             type='submit'
             onClick={onClick}
             disabled={disabled ?? fetcher.state !== 'idle'}
-            className={`inline-flex w-full items-center justify-center rounded bg-primary px-6 py-3
-              text-sm font-medium text-background transition hover:opacity-90 
-              disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+            className={`
+              inline-flex w-full items-center justify-center rounded bg-primary
+              px-6 py-3 text-sm font-medium text-background transition hover:opacity-90
+              disabled:cursor-not-allowed disabled:opacity-50 ${className}
+              `}
           >
             {fetcher.state !== 'idle' ? 'Adding...' : children}
           </button>
