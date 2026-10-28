@@ -13,6 +13,7 @@ import * as Paragraph from '~/components/elements/paragraph';
 import * as ButtonElement from '~/components/elements/button';
 import * as FeaturedCollection from '~/sections/featured-collection';
 import * as CollectionItems from '~/sections/featured-collection/items';
+import * as ImageWithText from '~/sections/image-with-text';
 
 export const components: HydrogenComponent[] = [
     Hero,
@@ -28,4 +29,5 @@ export const components: HydrogenComponent[] = [
     ButtonElement,
     FeaturedCollection,
     CollectionItems,
+    ImageWithText,
 ];
