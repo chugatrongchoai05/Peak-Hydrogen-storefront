@@ -7,6 +7,10 @@ import * as ProductGridSection from '~/sections/product-grid';
 import * as PageBanner from '~/sections/page-banner';
 import * as ProductMain from '~/sections/product-main';
 import * as RelatedProducts from '~/sections/related-products';
+import * as Subheading from '~/components/elements/subheading';
+import * as Heading from '~/components/elements/heading';
+import * as Paragraph from '~/components/elements/paragraph';
+import * as ButtonElement from '~/components/elements/button';
 
 export const components: HydrogenComponent[] = [
     Hero,
@@ -15,5 +19,9 @@ export const components: HydrogenComponent[] = [
     ProductGridSection,
     PageBanner,
     ProductMain,
-    RelatedProducts
+    RelatedProducts,
+    Subheading,
+    Heading,
+    Paragraph,
+    ButtonElement,
 ];

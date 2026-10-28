@@ -11,6 +11,10 @@ import { withWeaverse } from '@weaverse/hydrogen';
 import { GlobalStyle } from './weaverse/styles';
 import { resolveMarket, DEFAULT_LOCALE } from '~/utils/locale';
 import type { CountryCode } from '@shopify/hydrogen/storefront-api-types';
+import interStyles from '@fontsource-variable/inter/index.css?url';
+import barlow600 from '@fontsource/barlow-condensed/600.css?url';
+import barlow700 from '@fontsource/barlow-condensed/700.css?url';
+import barlow800 from '@fontsource/barlow-condensed/800.css?url';
 
 export type RootLoader = typeof loader;
 
@@ -38,6 +42,10 @@ export function links() {
     { rel: 'preconnect', href: 'https://cdn.shopify.com' },
     { rel: 'preconnect', href: 'https://shop.app' },
     { rel: 'icon', type: 'image/svg+xml', href: favicon },
+    { rel: 'stylesheet', href: interStyles },
+    { rel: 'stylesheet', href: barlow600 },
+    { rel: 'stylesheet', href: barlow700 },
+    { rel: 'stylesheet', href: barlow800 },
   ];
 }
 

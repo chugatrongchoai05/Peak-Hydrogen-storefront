@@ -8,6 +8,24 @@
   --color-primary: #111111;
   --color-background: #ffffff;
   --color-foreground: #111111;
-  --color-muted: #6b7280;
-  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --color-surface: #f2f2f0;
+  --color-accent: #c7f36b;
+  --color-muted: #6b6b6b;
+  --font-heading: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  :root {
+    --heading-transform: uppercase;
+  }
+  body {
+    font-family: var(--font-body);
+    color: var(--color-foreground);
+    background-color: var(--color-background);
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    text-transform: var(--heading-transform);
+  }
 }

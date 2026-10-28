@@ -1,27 +1,47 @@
-import type { ButtonHTMLAttributes } from "react";
-import { Link } from "~/components/ui/link";
+import type { ButtonHTMLAttributes } from 'react';
+import { Link } from '~/components/ui/link';
+import { cn } from '~/utils/cn';
 
-type Variant = "primary" | "outline";
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'underline';
 
-const base = "inline-flex items-center justify-center rounded px-6 py-3 text-sm font-medium transition";
-const variants: Record<Variant, string> = {
-  primary: "bg-primary text-background hover:opacity-90",
-  outline: "border border-foreground text-foreground hover:bg-foreground hover:text-background"
+const base = 'inline-flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-wider transition';
+
+const variants: Record<ButtonVariant, string> = {
+  primary: 'bg-primary px-6 py-3 text-background hover:opacity-85',
+  secondary: 'bg-accent px-6 py-3 text-foreground hover:opacity-85',
+  outline: 'border border-current px-6 py-3 hover:opacity-70',
+  underline: 'underline decoration-2 underline-offset-4 hover:opacity-70',
 };
 
+export function buttonClasses(variant: ButtonVariant = 'primary', className?: string) {
+  return cn(base, variants[variant], className);
+}
+
+export function isExternalLink(to: string) {
+  return /^(https?:)?\/\//.test(to) || to.startsWith('mailto:') || to.startsWith('tel:');
+}
+
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: Variant;
+  variant?: ButtonVariant;
   to?: string;
 };
 
-export function Button({ variant = "primary", to, className = "", ...props }: ButtonProps) {
-  const classes = `${base} ${variants[variant]} ${className}`;
+export function Button({ variant = 'primary', to, className, children, ...props }: ButtonProps) {
+  const classes = buttonClasses(variant, className);
   if (to) {
-    return (
+    return isExternalLink(to) ? (
+      <a href={to} className={classes} rel='noreferrer'>
+        {children}
+      </a>
+    ) : (
       <Link to={to} className={classes}>
-        {props.children}
+        {children}
       </Link>
     );
   }
-  return <button className={classes} {...props} />;
+  return (
+    <button className={classes} {...props}>
+      {children}
+    </button>
+  );
 }
