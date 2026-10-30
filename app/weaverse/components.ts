@@ -16,6 +16,7 @@ import * as CollectionItems from '~/sections/featured-collection/items';
 import * as ImageWithText from '~/sections/image-with-text';
 import * as Newsletter from '~/sections/newsletter';
 import * as NewsletterForm from '~/sections/newsletter/form';
+import * as Testimonials from '~/sections/testimonials';
 
 export const components: HydrogenComponent[] = [
     Hero,
@@ -34,4 +35,5 @@ export const components: HydrogenComponent[] = [
     ImageWithText,
     Newsletter,
     NewsletterForm,
+    Testimonials,
 ];
